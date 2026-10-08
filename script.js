@@ -1,3 +1,9 @@
+// Always start from the top (first page) after a refresh or when coming back with the Back button
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+scrollTo(0, 0);
+addEventListener('pageshow', () => scrollTo(0, 0));
+addEventListener('load', () => scrollTo(0, 0));
+
 // ===== CONFIG: edit these =====
 const WEDDING_DATE = new Date('2026-12-11T19:00:00');
 const EVENT_TITLE = 'Tannu & Saurav Wedding';
@@ -72,7 +78,7 @@ envelope.addEventListener('click', () => {
 
 // Scroll reveal
 const io = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  e.target.classList.toggle('in', e.isIntersecting);
 }), { threshold: .2 });
 document.querySelectorAll('.reveal:not(.hero .reveal)').forEach(el => io.observe(el));
 
@@ -177,4 +183,60 @@ document.getElementById('cal').addEventListener('click', e => {
   document.getElementById('mapEmpty').hidden = true;
   document.getElementById('mapLink').href = `https://www.google.com/maps/search/?api=1&query=${q}`;
   document.getElementById('venueText').textContent = [VENUE_NAME, VENUE_ADDRESS].filter(Boolean).join(' · ');
+})();
+
+// Pages: animated page turn, next-page arrow and auto-advance every 3 seconds
+(function () {
+  const AUTO_MS = 3000, MOVE_MS = 1200;
+  const btn = document.getElementById('next');
+  const root = document.documentElement;
+  const pages = [...document.querySelectorAll('main>section:not(.events), main>section.events>.fn, main>footer')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let auto = !reduce, timer = 0, moving = false;
+  const lightbox = document.getElementById('lightbox');
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const top = p => p.getBoundingClientRect().top;
+  const current = () => pages.reduce((a, b) => Math.abs(top(b)) < Math.abs(top(a)) ? b : a);
+  const next = () => pages[pages.indexOf(current()) + 1];
+  const locked = () => document.body.classList.contains('locked');
+
+  function goTo(p) {
+    if (!p || moving) return;
+    clearTimeout(timer);
+    const from = scrollY, to = from + top(p), t0 = performance.now();
+    moving = true; root.classList.add('is-moving');
+    (function step(now) {
+      const k = Math.min(1, (now - t0) / MOVE_MS);
+      scrollTo(0, from + (to - from) * ease(k));
+      if (k < 1) requestAnimationFrame(step);
+      else { moving = false; root.classList.remove('is-moving'); schedule(); }
+    })(t0);
+  }
+  function schedule() {
+    clearTimeout(timer);
+    if (!auto || moving || locked() || !lightbox.hidden || !next()) return;
+    timer = setTimeout(() => goTo(next()), AUTO_MS);
+  }
+  function update() {
+    const last = pages[pages.length - 1];
+    btn.hidden = locked() || top(last) < innerHeight * .5;
+    document.getElementById('autoBtn').hidden = locked();
+  }
+
+  // auto on/off button
+  const ab = document.createElement('button');
+  ab.id = 'autoBtn'; ab.className = 'autobtn'; ab.hidden = true;
+  const label = () => { ab.textContent = auto ? 'Auto ❚❚' : 'Auto ▶'; ab.setAttribute('aria-pressed', auto); };
+  ab.addEventListener('click', () => { auto = !auto; label(); schedule(); });
+  label(); document.body.appendChild(ab);
+
+  btn.addEventListener('click', () => goTo(next()));
+  let idle = 0;
+  addEventListener('scroll', () => { update(); if (!moving) { clearTimeout(timer); clearTimeout(idle); idle = setTimeout(schedule, 400); } }, { passive: true });
+  ['pointerdown', 'wheel', 'keydown', 'touchstart'].forEach(ev => addEventListener(ev, () => { if (!moving) clearTimeout(timer); }, { passive: true }));
+  ['pointerup', 'touchend'].forEach(ev => addEventListener(ev, () => { if (!moving) { clearTimeout(idle); idle = setTimeout(schedule, 400); } }, { passive: true }));
+  addEventListener('resize', update);
+  new MutationObserver(() => { update(); schedule(); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  new MutationObserver(schedule).observe(lightbox, { attributes: true, attributeFilter: ['hidden'] });
+  update(); schedule();
 })();

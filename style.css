@@ -395,3 +395,46 @@ main>section.gallery{display:block;position:relative;overflow:hidden;min-height:
   .hero-text{margin-top:1rem}
   .hero .names{font-size:clamp(2.8rem,13vw,4rem)}
 }
+
+/* Hosts page: both families */
+.hosts{background:radial-gradient(circle at 50% 0,#fff7ee,#fde8dc 70%);gap:1rem}
+.hosts h2{margin:0}
+.host-line{font-style:italic;font-size:1.25rem;max-width:30ch;line-height:1.3;color:var(--ink)}
+.host-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;width:min(100%,780px);margin-top:.8rem}
+.host{background:rgba(255,250,245,.85);border:1px solid var(--gold);border-radius:16px;padding:1.4rem 1rem;box-shadow:0 10px 26px #9b1b3022;outline:1px solid #b8860b33;outline-offset:-8px}
+.host .who{letter-spacing:.3em;text-transform:uppercase;font-size:.72rem;color:var(--gold)}
+.host h3{font-family:'Great Vibes',cursive;font-weight:400;font-size:clamp(2.4rem,7vw,3.4rem);color:var(--rose);margin:.1rem 0 .3rem}
+.host .rel{font-style:italic;color:var(--gold)}
+.host .parent{font-size:1.2rem;font-weight:600;margin:.1rem 0}
+.host .amp2{font-family:'Great Vibes',cursive;color:var(--gold);font-size:1.4rem;line-height:1}
+.host-heart{color:var(--rose);font-size:1.8rem;animation:beat 1.4s ease-in-out infinite}
+@media(max-width:600px){
+  .host-grid{grid-template-columns:1fr;gap:.4rem}
+  .host-heart{font-size:1.4rem}
+  .host{padding:1rem .8rem}
+  .host .parent{font-size:1.1rem}
+}
+/* Hosts page: maroon, two shades lighter than the intro page */
+.hosts{background:radial-gradient(circle at 50% 30%,#8a2230,#6e1624 60%,#5c101c);color:#f7e6c8}
+.hosts .small{color:#f2d28a}
+.hosts h2{color:#ffe3b0}
+.hosts .host-line{color:#f7e6c8}
+.hosts .host{background:rgba(60,8,16,.45);border-color:#d9b45a;box-shadow:0 10px 26px #00000055;outline-color:#d9b45a55}
+.hosts .host .who,.hosts .host .rel,.hosts .host .amp2{color:#f2c76e}
+.hosts .host h3{color:#fff}
+.hosts .host .parent{color:#f7e6c8}
+.hosts .host-heart{color:#f2c76e}
+
+/* Next-page arrow */
+.next{position:fixed;left:50%;bottom:1.1rem;z-index:25;width:46px;height:46px;margin-left:-23px;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(74,10,10,.55);color:#f6dc9a;cursor:pointer;box-shadow:0 0 0 1.5px #f6dc9a99,0 6px 16px #0006;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:nudge 1.5s ease-in-out infinite}
+.next[hidden]{display:none}
+.next svg{width:24px;height:24px}
+.next:hover{background:rgba(74,10,10,.8)}
+@keyframes nudge{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(9px);opacity:.65}}
+
+/* Animated page turns: while the script glides between pages, snapping and CSS smooth-scroll are paused */
+html.is-moving{scroll-snap-type:none!important;scroll-behavior:auto!important}
+/* content of each page glides in again every time the page is entered */
+.reveal{transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.autobtn{position:fixed;left:1rem;bottom:1rem;z-index:30;height:40px;padding:0 .9rem;border:1.5px solid #f6dc9a99;border-radius:20px;background:rgba(74,10,10,.6);color:#f6dc9a;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.autobtn[hidden]{display:none}
