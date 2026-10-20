@@ -7,9 +7,15 @@ addEventListener('load', () => scrollTo(0, 0));
 // ===== CONFIG: edit these =====
 const WEDDING_DATE = new Date('2026-12-11T19:00:00');
 const EVENT_TITLE = 'Tannu & Saurav Wedding';
-const VENUE_NAME = '';      // e.g. 'Rose Palace'
-const VENUE_ADDRESS = '';   // e.g. '12 Lakeview Road, Patna, Bihar' (used for the map)
-const EVENT_LOCATION = [VENUE_NAME, VENUE_ADDRESS].filter(Boolean).join(', ') || 'Venue to be announced';
+// Venues: one card per side. Fill in name + address (with city) and the map appears.
+// `events` is the line shown under the title, e.g. 'Haldi · Mehendi'.
+// Optional: `coords` ('lat,lng') pins the exact spot on the map, and `link` is the Google Maps link the button opens.
+const VENUES = [
+  { side: "Groom's Side", name: 'Mishra Residency (Darbaar)', address: 'Munger, Bihar', events: '', coords: '25.3674249,86.5285492', link: 'https://maps.app.goo.gl/wsDcQSd8x1ZtmkxL9' },
+  { side: "Bride's Side", name: 'Rani Sati Mandir', address: 'Bhagalpur, Bihar', events: '', coords: '25.2481191,86.9738289', link: 'https://maps.app.goo.gl/5Q5apbtYaL7XcAi97' },
+];
+const venueLine = v => [v.name, v.address].filter(Boolean).join(', ');
+const EVENT_LOCATION = VENUES.filter(v => venueLine(v)).map(v => `${v.side}: ${venueLine(v)}`).join(' | ') || 'Venue to be announced';
 
 // Story chapters: edit text and optionally add a photo path
 const STORY = [
@@ -184,17 +190,23 @@ document.getElementById('cal').addEventListener('click', e => {
   }), { threshold: .3 }).observe(panel);
 })();
 
-// Venue: real Google Map in a card
-(function () {
-  if (!VENUE_ADDRESS) return;
-  const q = encodeURIComponent([VENUE_NAME, VENUE_ADDRESS].filter(Boolean).join(', '));
-  const f = document.getElementById('mapFrame');
-  f.src = `https://maps.google.com/maps?q=${q}&z=15&output=embed`;
-  f.hidden = false;
-  document.getElementById('mapEmpty').hidden = true;
-  document.getElementById('mapLink').href = `https://www.google.com/maps/search/?api=1&query=${q}`;
-  document.getElementById('venueText').textContent = [VENUE_NAME, VENUE_ADDRESS].filter(Boolean).join(' · ');
-})();
+// Venue cards: groom's side and bride's side, each with its own map
+document.getElementById('venues').innerHTML = VENUES.map(v => {
+  const q = encodeURIComponent(venueLine(v));
+  const pin = v.coords ? encodeURIComponent(v.coords) : q;
+  const href = v.link || `https://www.google.com/maps/search/?api=1&query=${pin}`;
+  return `<article class="venue-card reveal">
+    <p class="who">${v.side}</p>
+    ${v.events ? `<p class="vevents">${v.events}</p>` : ''}
+    <h3>${v.name || 'Venue details coming soon'}</h3>
+    ${v.address ? `<p class="vaddr">${v.address}</p>` : ''}
+    <div class="map-card">${q && v.address
+      ? `<iframe title="${v.side} venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen src="https://maps.google.com/maps?q=${pin}&z=16&output=embed"></iframe>`
+      : '<div class="map-empty">Map will appear here once the venue is added</div>'}</div>
+    ${q && v.address ? `<a class="btn" href="${href}" target="_blank" rel="noopener">Open in Maps</a>` : ''}
+  </article>`;
+}).join('');
+document.querySelectorAll('#venues .reveal').forEach(el => io.observe(el));
 
 // Pages: animated page turn, next-page arrow and auto-advance after 3 seconds of no activity
 (function () {
