@@ -457,3 +457,70 @@ html.is-moving{scroll-snap-type:none!important;scroll-behavior:auto!important}
 #intro .envelope .flap{background:rgba(255,255,255,.22);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 /* lighter background blur */
 #intro::before{filter:blur(3px) brightness(.95) saturate(1.15);inset:-8px}
+
+/* Venue: two cards, groom's side and bride's side */
+.venue-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;width:min(100%,980px);margin:0 auto}
+.venue-card{background:rgba(255,250,245,.9);border:1px solid var(--gold);border-radius:16px;padding:1.2rem 1rem 1.4rem;box-shadow:0 10px 26px #9b1b3022;display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.venue-card .who{letter-spacing:.3em;text-transform:uppercase;font-size:.75rem;color:var(--gold);margin:0}
+.venue-card .vevents{font-style:italic;color:var(--rose);font-size:1.05rem;margin:0}
+.venue-card h3{font-family:'Great Vibes',cursive;font-weight:400;font-size:clamp(2rem,5vw,2.8rem);color:var(--rose);margin:.1rem 0 0;line-height:1.1}
+.venue-card .vaddr{font-size:1.05rem;margin:0;color:var(--ink)}
+.venue-card .map-card{width:100%;height:clamp(150px,26svh,260px)}
+.venue-card .btn{margin:.4rem 0 0}
+.venue-actions{margin-top:.6rem}
+@media(max-width:700px){
+  main>section.venue{padding:1.5rem 1rem;gap:.8rem}
+  .venue-grid{grid-template-columns:1fr;gap:.8rem}
+  .venue-card{padding:.8rem .8rem 1rem;gap:.3rem}
+  .venue-card h3{font-size:1.9rem}
+  .venue-card .map-card{height:clamp(110px,19svh,170px)}
+  .venue .reveal.venue-actions{margin-top:0}
+}
+@media(max-width:700px){.venue-card .map-card{height:clamp(90px,15svh,140px)}.venue-card .btn{padding:.6rem 1.4rem}}
+
+/* Venue page: festive picture as a lightly blurred background */
+main>section.venue{background:#2a0c0a;isolation:isolate;overflow:hidden}
+main>section.venue::before{content:"";position:absolute;inset:-12px;z-index:-2;background:url('assets/photos/venue-bg.jpg') center/cover no-repeat;filter:blur(3px) saturate(1.05)}
+main>section.venue::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(#2a0c0a99,#2a0c0a55 45%,#2a0c0a99)}
+.venue h2{color:#ffe3b0;text-shadow:0 3px 18px #000a}
+.venue .btn.ghost{color:#ffe3b0;border-color:#ffe3b0;background:#2a0c0a55;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.venue .venue-card{background:rgba(255,250,245,.88)}
+@media(max-aspect-ratio:1/1){main>section.venue::before{background-position:50% 45%}}
+/* more see-through venue cards */
+.venue .venue-card{background:rgba(255,250,245,.5);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);border-color:#e8c27acc}
+.venue .venue-card .map-empty{background:rgba(255,235,228,.35)}
+.venue .venue-card .map-card{background:rgba(255,235,228,.3)}
+.venue .venue-card .who{color:#8a5a00;font-weight:600}
+.venue .venue-card .vaddr,.venue .venue-card .map-empty{color:#3a1612;font-weight:600}
+.venue .venue-card h3{color:#7a0f20;text-shadow:0 1px 0 #fff8,0 0 10px #fff6}.venue .venue-card .vevents{color:#8a1224;font-weight:600}
+
+/* Venue: keep the "Shadi Wala Ghar" sign visible. Laptop: cards sit left and right of the sign. Phone: sign on top, cards below. */
+@media(min-aspect-ratio:1/1){
+  main>section.venue::before{background-position:center center}
+  main>section.venue::after{background:linear-gradient(90deg,#2a0c0aaa,#2a0c0a22 30%,#2a0c0a22 70%,#2a0c0aaa)}
+  .venue h2{position:absolute;top:1.6rem;left:6%;margin:0;font-size:2.6rem}
+  .venue-grid{width:min(100%,1240px);column-gap:clamp(300px,34vw,520px);align-items:center}
+  .venue-card{padding:1rem .9rem 1.2rem}
+  .venue-card h3{font-size:clamp(1.8rem,2.6vw,2.4rem)}
+  .venue-card .map-card{height:clamp(120px,22svh,200px)}
+}
+@media(max-aspect-ratio:1/1){
+  main>section.venue{justify-content:flex-end;padding:0 .8rem 1rem}
+  main>section.venue::before{inset:-6px;background-size:auto 62%;background-position:center top;background-repeat:no-repeat}
+  main>section.venue::after{background:linear-gradient(#2a0c0a00 0,#2a0c0a00 38%,#2a0c0acc 66%,#2a0c0aee)}
+  .venue h2{position:absolute;top:.8rem;left:0;right:0;margin:0;font-size:2.1rem}
+  .venue-grid{gap:.5rem}
+  .venue-card{padding:.6rem .7rem .8rem;gap:.15rem}
+  .venue-card .vevents{display:none}
+  .venue-card h3{font-size:1.6rem}
+  .venue-card .map-card{height:clamp(70px,11svh,110px)}
+  .venue-card .btn{padding:.45rem 1.2rem;font-size:.8rem;margin-top:.2rem}
+  .venue .venue-actions{margin-top:.2rem}
+  .venue .btn.ghost{padding:.5rem 1.4rem;font-size:.8rem;margin:.2rem}
+}
+
+/* Dress code line on each Celebrations page */
+.fn-dress{margin-top:1rem;font-size:1.1rem;letter-spacing:.08em}
+.fn-dress span{display:block;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;opacity:.8;margin-bottom:.15rem}
+.fn-dress{padding-top:.8rem;border-top:1px solid currentColor;display:inline-block;min-width:60%}
+@media(max-aspect-ratio:1/1){.fn-dress{margin-top:.7rem;font-size:1rem}}
