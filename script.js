@@ -208,9 +208,9 @@ document.getElementById('venues').innerHTML = VENUES.map(v => {
 }).join('');
 document.querySelectorAll('#venues .reveal').forEach(el => io.observe(el));
 
-// Pages: animated page turn, next-page arrow and auto-advance after 3 seconds of no activity
+// Pages: animated page turn, next-page arrow and auto-advance after 5 seconds of no activity
 (function () {
-  const AUTO_MS = 3000, MOVE_MS = 1200;
+  const AUTO_MS = 5000, MOVE_MS = 1200;
   const btn = document.getElementById('next');
   const root = document.documentElement;
   const pages = [...document.querySelectorAll('main>section:not(.events), main>section.events>.fn, main>footer')];
@@ -258,7 +258,7 @@ document.querySelectorAll('#venues .reveal').forEach(el => io.observe(el));
   label(); document.body.appendChild(ab);
 
   btn.addEventListener('click', () => { touch(); goTo(next()); });
-  // any user activity restarts the 3-second wait
+  // any user activity restarts the 5-second wait
   ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'touchstart', 'touchmove', 'touchend', 'touchcancel', 'wheel', 'keydown', 'mousemove']
     .forEach(ev => addEventListener(ev, () => { if (!moving) touch(); }, { passive: true }));
   addEventListener('scroll', () => { update(); if (!moving) touch(); }, { passive: true });
